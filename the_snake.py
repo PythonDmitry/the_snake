@@ -1,4 +1,4 @@
-from random import choice, randint
+from random import randint
 
 import pygame
 
@@ -43,25 +43,23 @@ clock = pygame.time.Clock()
 
 
 class GameObject:
-    """
-    Это базовый класс, от которого наследуются другие игровые объекты.
-    """
+    """Это базовый класс, от которого наследуются другие игровые объекты."""
+
     def __init__(self, body_color=None):
         self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.body_color = body_color
 
     def draw(self):
-        """
-        Заготовка метода для отрисовки объекта на игровом поле.
-        """
+        """Заготовка метода для отрисовки объекта на игровом поле."""
         pass
 
 
 class Snake(GameObject):
+    """Описывает змейку и ее поведение.
+    Управляет её движением, отрисовкой, а также обрабатывает
+    действия пользователя.
     """
-    Описывает змейку и ее поведение.
-    Управляет её движением, отрисовкой, а также обрабатывает действия пользователя.
-    """
+
     def __init__(self, body_color=SNAKE_COLOR):
         super().__init__(body_color)
         self.direction = RIGHT
@@ -71,9 +69,7 @@ class Snake(GameObject):
         self.last = None
 
     def draw(self, surface):
-        """
-        Отрисовка объекта на игровом поле.
-        """
+        """Отрисовка объекта на игровом поле."""
         for position in self.positions[:-1]:
             rect = (
                 pygame.Rect((position[0], position[1]), (GRID_SIZE, GRID_SIZE))
@@ -95,8 +91,8 @@ class Snake(GameObject):
             pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
 
     def move(self):
-        """
-        Обновляет позицию змейки добавляя новую голову в начало списка и удаляет последний элемент.
+        """Обновляет позицию змейки добавляя новую голову в начало списка и
+        удаляет последний элемент.
         """
         head_x, head_y = self.positions[0]
         direction_x, direction_y = self.direction
@@ -113,14 +109,12 @@ class Snake(GameObject):
             self.last = None
 
     def get_head_position(self):
-        """
-        Возвращает позицию головы змейки.
-        """
+        """Возвращает позицию головы змейки."""
         return self.positions[0]
 
     def reset(self):
-        """
-        Сбрасывает змейку в начальное состояние после столкновения с собой.
+        """Сбрасывает змейку в начальное
+        состояние после столкновения с собой.
         """
         self.direction = RIGHT
         self.positions = [self.position]
@@ -128,34 +122,27 @@ class Snake(GameObject):
         screen.fill(BOARD_BACKGROUND_COLOR)
 
     def update_direction(self):
-        """
-        Обновляет направление движения змейки.
-        """
+        """Обновляет направление движения змейки."""
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
 
 
 class Apple(GameObject):
-    """
-    Описывает яблоко и действия с ним.
-    """
+    """Описывает яблоко и действия с ним."""
+
     def __init__(self, body_color=APPLE_COLOR):
         super().__init__(body_color)
         self.position = (5 * GRID_SIZE, 15 * GRID_SIZE)
 
     def randomize_position(self):
-        """
-        Устанавливает случайное положение яблока на игровом поле.
-        """
+        """Устанавливает случайное положение яблока на игровом поле."""
         x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
         y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
         self.position = (x, y)
 
     def draw(self, surface):
-        """
-        Отрисовка объекта на игровом поле.
-        """
+        """Отрисовка объекта на игровом поле."""
         rect = pygame.Rect(
             (self.position[0], self.position[1]),
             (GRID_SIZE, GRID_SIZE)
@@ -165,9 +152,7 @@ class Apple(GameObject):
 
 
 def handle_keys(game_object):
-    """
-    Обработка нажатия клавиш.
-    """
+    """Обработка нажатия клавиш."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -184,9 +169,7 @@ def handle_keys(game_object):
 
 
 def main() -> None:
-    """
-    Основной цикл игры
-    """
+    """Основной цикл игры"""
     apple = Apple()
     snake = Snake()
 
