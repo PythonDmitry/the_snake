@@ -30,7 +30,7 @@ APPLE_COLOR = (255, 0, 0)
 SNAKE_COLOR = (0, 255, 0)
 
 # Скорость движения змейки:
-SPEED = 20
+SPEED = 15
 
 # Настройка игрового окна:
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
@@ -55,7 +55,10 @@ class GameObject:
 class Snake(GameObject):
     def __init__(self, body_color=SNAKE_COLOR):
         super().__init__(body_color)
-        self.positions = []
+        self.direction = RIGHT
+        self.next_direction = None
+        self.positions = [self.position]
+        self.length = 1
         self.last = None
 
     def draw(self, surface):
@@ -78,6 +81,26 @@ class Snake(GameObject):
                 (GRID_SIZE, GRID_SIZE)
             )
             pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
+
+    def move(self):
+        head_x, head_y = self.positions[0]
+        direction_x, direction_y = self.direction
+
+        position = (
+            (head_x + (direction_x * GRID_SIZE)) % SCREEN_WIDTH,
+            (head_y + (direction_y * GRID_SIZE)) % SCREEN_HEIGHT
+        )
+        self.positions.insert(0, position)
+
+        if len(self.positions) > self.length:
+            self.last = self.positions.pop()
+        else:
+            self.last = None
+
+    def update_direction(self):
+        if self.next_direction:
+            self.direction = self.next_direction
+            self.next_direction = None
 
 
 class Apple(GameObject):
@@ -113,15 +136,19 @@ def handle_keys(game_object):
 def main():
     # Тут нужно создать экземпляры классов.
     apple = Apple()
+    snake = Snake()
+
     screen.fill(BOARD_BACKGROUND_COLOR)
 
     while True:
         clock.tick(SPEED)
 
-        handle_keys(None)
+        handle_keys(snake)
+        snake.update_direction()
+        snake.move()
 
         apple.draw(screen)
-
+        snake.draw(screen)
         pygame.display.update()
         # Тут опишите основную логику игры.
         # ...
