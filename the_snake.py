@@ -94,7 +94,7 @@ class Snake(GameObject):
         """Обновляет позицию змейки добавляя новую голову в начало списка и
         удаляет последний элемент.
         """
-        head_x, head_y = self.positions[0]
+        head_x, head_y = self.get_head_position()  # self.positions[0]
         direction_x, direction_y = self.direction
 
         position = (
@@ -103,10 +103,11 @@ class Snake(GameObject):
         )
         self.positions.insert(0, position)
 
-        if len(self.positions) > self.length:
-            self.last = self.positions.pop()
-        else:
-            self.last = None
+        # if len(self.positions) > self.length:
+        #     self.last = self.positions.pop()
+        # else:
+        #     self.last = None
+        self.last = self.positions.pop() if len(self.positions) > self.length else 0
 
     def get_head_position(self):
         """Возвращает позицию головы змейки."""
@@ -133,13 +134,13 @@ class Apple(GameObject):
 
     def __init__(self, body_color=APPLE_COLOR):
         super().__init__(body_color)
-        self.position = (5 * GRID_SIZE, 15 * GRID_SIZE)
+        self.position = (randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+                         randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
 
     def randomize_position(self):
         """Устанавливает случайное положение яблока на игровом поле."""
-        x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
-        y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
-        self.position = (x, y)
+        self.position = (randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+                         randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
 
     def draw(self, surface):
         """Отрисовка объекта на игровом поле."""
@@ -189,7 +190,8 @@ def main() -> None:
         if snake.get_head_position() == apple.position:
             snake.length += 1
             apple.randomize_position()
-
+        while apple.position in snake.positions:
+            apple.randomize_position()
         pygame.display.update()
 
 
