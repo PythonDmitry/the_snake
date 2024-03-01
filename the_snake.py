@@ -107,7 +107,8 @@ class Snake(GameObject):
         #     self.last = self.positions.pop()
         # else:
         #     self.last = None
-        self.last = self.positions.pop() if len(self.positions) > self.length else 0
+        self.last = self.positions.pop() if (
+                len(self.positions) > self.length) else 0
 
     def get_head_position(self):
         """Возвращает позицию головы змейки."""
