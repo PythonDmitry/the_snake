@@ -102,11 +102,6 @@ class Snake(GameObject):
             (head_y + (direction_y * GRID_SIZE)) % SCREEN_HEIGHT
         )
         self.positions.insert(0, position)
-
-        # if len(self.positions) > self.length:
-        #     self.last = self.positions.pop()
-        # else:
-        #     self.last = None
         self.last = self.positions.pop() if\
             len(self.positions) > self.length else 0
 
